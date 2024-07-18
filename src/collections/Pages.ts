@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { HeroBlock } from './blocks/HeroBlock'
 import { revalidateTag } from 'next/cache'
+import Alert from '@/components/Alert'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -38,6 +39,7 @@ export const Pages: CollectionConfig = {
         position: 'sidebar',
       },
       required: true,
+      unique: true,
     },
     {
       name: 'layout',
@@ -55,6 +57,15 @@ export const Pages: CollectionConfig = {
       type: 'checkbox',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'alert',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: Alert,
+        },
       },
     },
   ],
