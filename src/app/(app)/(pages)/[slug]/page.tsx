@@ -3,23 +3,10 @@ import { unstable_cache as cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
+import { cacheWithTags } from '@/utils/cache'
+import { pagesService } from '@/services/pages.service'
 
-const getPageBySlug = cache(
-  async (slug: string) => {
-    const payload = await getPayloadHMR({ config: configPromise })
-    const pages = await payload.find({
-      collection: 'pages',
-      where: {
-        slug: {
-          equals: slug,
-        },
-      },
-    })
-    return pages.docs.length > 0 ? pages.docs[0] : null
-  },
-  undefined,
-  { tags: ['pages'] },
-)
+const getPageBySlug = cacheWithTags(pagesService.getPageBySlug, ['pages'])
 
 export default async function page({ params }: { params: { slug: string } }) {
   const page = await getPageBySlug(params.slug)
@@ -28,23 +15,12 @@ export default async function page({ params }: { params: { slug: string } }) {
   }
   return (
     <>
-      <div>Hello {params.slug}</div>
       <p>{page.title}</p>
     </>
   )
 }
 
-const getPagesSlugs = cache(
-  async () => {
-    const payload = await getPayloadHMR({ config: configPromise })
-    const pages = await payload.find({
-      collection: 'pages',
-    })
-    return pages.docs.map((page) => page.slug)
-  },
-  undefined,
-  { tags: ['pages'] },
-)
+const getPagesSlugs = cacheWithTags(pagesService.getAllPageSlug, ['pages'])
 
 export async function generateStaticParams() {
   const slugs = await getPagesSlugs()

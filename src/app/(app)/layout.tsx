@@ -1,27 +1,9 @@
 import React from 'react'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
-import { unstable_cache as cache } from 'next/cache'
 import Link from 'next/link'
+import { navigationService } from '@/services/navigation.service'
+import { cacheWithTags } from '@/utils/cache'
 
-const getNavs = cache(
-  async () => {
-    const payload = await getPayloadHMR({ config: configPromise })
-    const data = await payload.findGlobal({
-      slug: 'navigations',
-    })
-    return data.items
-      .map((nav) => ({
-        label: nav.label,
-        isHomePage: typeof nav.page === 'string' ? false : nav.page.isHomepage,
-        href: typeof nav.page === 'string' ? null : nav.page.slug,
-      }))
-      .filter((nav) => nav.href)
-  },
-  undefined,
-  { tags: ['navigations'] },
-)
-
+const getNavs = cacheWithTags(navigationService.getNavigation, ['navigations'])
 export default async function RootLayout({
   children,
 }: Readonly<{
