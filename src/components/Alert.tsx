@@ -1,5 +1,11 @@
 import React from 'react'
+import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 
-export default function Alert() {
-  return <div className="text-red-500 p-4 bg-red-100 rounded-md">This is an alert</div>
+export default function AlertBox() {
+  return (
+    <Alert>
+      <AlertTitle>Heads up!</AlertTitle>
+      <AlertDescription>You can add components to your app using the cli.</AlertDescription>
+    </Alert>
+  )
 }
